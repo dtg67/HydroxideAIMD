@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
-import pandas as pd
 
 def distances(distanceframe, l, n):
     dim = 3
@@ -13,6 +12,6 @@ def distances(distanceframe, l, n):
         dist_nd_sq += dist_1d**2
 
     dist_nd = squareform(np.sqrt(dist_nd_sq))
-    mindist = np.min(dist_nd[dist_nd > 0.])
+    mindist = np.min(dist_nd[(dist_nd > 0.)])
     index = np.where(dist_nd == mindist)
-    return [mindist, index[0].tolist()]
+    return [mindist, index[0].tolist(), dist_nd[0,]]
