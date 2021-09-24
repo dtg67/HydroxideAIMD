@@ -1,5 +1,6 @@
 import argparse
 import filetopd
+from molecule import distances
 
 #### COMMANDLINE ARGUMENT PASSING ####
 
@@ -19,4 +20,8 @@ cp2k = args.file
 
 dataframes = filetopd.filetopd(cp2k)
 
-print(dataframes)
+distanceframe = dataframes.loc[dataframes['i'] == 0]
+distanceframe = distanceframe[['x','y','z']]
+
+mindist, index = distances(distanceframe, l, n)
+
