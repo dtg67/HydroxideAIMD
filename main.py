@@ -1,6 +1,6 @@
 import argparse
 import filetopd
-from molecule import distances
+from molecule import distances, findwaters
 import pandas as pd
 from scipy.stats import gaussian_kde
 
@@ -22,26 +22,14 @@ cp2k = args.file
 
 dataframes = filetopd.filetopd(cp2k)
 
-file = open("distance.dat", "a")
+
 for i in range(max(dataframes['i']) + 1):
 
     iframes = dataframes.loc[dataframes['i'] == i]
-
-    distanceframe = iframes[['x','y','z']]
-    #
-    mindist, index, d = distances(distanceframe, l, n)
-    frame0 = iframes.loc[iframes['index'] == index[0]]
-    frame1 = iframes.loc[iframes['index'] == index[1]]
-    frame0 = pd.concat([frame0, frame1])
-    frameO = frame0.loc[frame0['type'] == 'O']
-    #
-    frameH = iframes.loc[iframes['type'] == 'H']
-    frameall = pd.concat([frameO, frameH])
-    frameall = frameall[['x', 'y', 'z']]
-    #
-    mindist, index1, d = distances(frameall, l, 130)
-    d = sorted(d[1:])
-    file.write(str(d).strip('[]').replace(',', '\t') + '\n')
+    d = distances(iframes, l, n)
+    iframes = findwaters(iframes, d)
+    print(iframes.loc[iframes['mol'] == 'hydroxide'])
+    iframes.to_csv('frames.txt', sep='\t', index=False, header=True)
 
 
 
