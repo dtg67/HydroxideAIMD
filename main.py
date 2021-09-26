@@ -2,40 +2,45 @@ import argparse
 import filetopd
 from molecule import distances, findwaters, zundel
 import pandas as pd
+from analysis import hydroxide_o_to_water_h, coordination_num, hydroxide_o_to_water_h_frames
+import numpy as np
 pd.options.mode.chained_assignment = None
-
-#### COMMANDLINE ARGUMENT PASSING ####
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-f", "--file", action = "store",
-                    help = "CP2K trajectory file")
-parser.add_argument("-L", "--length", action = "store",
-                    help = "Simulation box length in angstroms")
-parser.add_argument("-N", "--number", action = "store",
-                    help = "Number of atoms in simulation")
+parser.add_argument("-f", "--file", action="store",
+                    help="CP2K trajectory file")
+parser.add_argument("-L", "--length", action="store",
+                    help="Simulation box length in angstroms")
+parser.add_argument("-N", "--number", action="store",
+                    help="Number of atoms in simulation")
 args = parser.parse_args()
-l = float(args.length)
+length = float(args.length)
 n = int(args.number)
 cp2k = args.file
 
-
 dataframes = filetopd.filetopd(cp2k)
 hydroxide = 0
+num_frames = max(dataframes['i']) + 1
+num_water_h = (n - 2) / 2
+o_to_h_mat = np.zeros(num_frames, num_water_h)
 
-for i in range(max(dataframes['i']) + 1):
+
+for i in range(num_frames):
     print(i)
     iframes = dataframes.loc[dataframes['i'] == i]
-    d = distances(iframes, l, n)
+    d = distances(iframes, length, n)
     iframesnamed = findwaters(iframes, d, hydroxide)
 
     if len(iframesnamed.loc[iframesnamed['mol'] == 'NULL']) > 0:
         iframesnamed = zundel(iframesnamed, d)
 
     dataframes[dataframes['i'] == i] = iframesnamed
-    hydroxide = iframesnamed.loc[iframesnamed['mol'] == 'hydroxide', 'index']
+    ho_o_w_h_iframes = hydroxide_o_to_water_h_frames(iframes)
+    o_to_h_array = hydroxide_o_to_water_h(ho_o_w_h_iframes, length)
+    print(coordination_num(ho_o_w_h_iframes, 2.6, o_to_h_array))
 
-print(len(dataframes[dataframes['mol'] == 'hydroxide']))
-dataframes.to_csv('frames.dat', header=True, index=False, sep= ' ')
+
+dataframes.to_csv('frames.dat', header=True, index=False, sep=' ')
 
 
