@@ -2,7 +2,7 @@ import argparse
 import filetopd
 from molecule import distances, findwaters
 import pandas as pd
-from scipy.stats import gaussian_kde
+pd.options.mode.chained_assignment = None
 
 #### COMMANDLINE ARGUMENT PASSING ####
 
@@ -27,9 +27,11 @@ for i in range(max(dataframes['i']) + 1):
 
     iframes = dataframes.loc[dataframes['i'] == i]
     d = distances(iframes, l, n)
-    iframes = findwaters(iframes, d)
-    print(iframes.loc[iframes['mol'] == 'hydroxide'])
-    iframes.to_csv('frames.txt', sep='\t', index=False, header=True)
+    iframesnamed = findwaters(iframes, d)
+    print(iframesnamed.loc[iframes['mol'] == 'hydroxide'])
+    dataframes[dataframes['i'] == i] = iframesnamed
 
+print(len(dataframes[dataframes['mol'] == 'hydroxide']))
+dataframes.to_csv('frames.dat', header=True, index=False, sep= ' ')
 
 

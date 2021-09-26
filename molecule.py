@@ -17,16 +17,15 @@ def distances(iframes, l, n):
     return dist_nd
 
 def findwaters(iframes, dist_nd):
-    atom_oxygen = iframes.loc[iframes['type'] == 'O']
-    atom_hydrogen = iframes.loc[iframes['type'] == 'H']
-    atom_oxygen = atom_oxygen['index']
+    atom_oxygen = iframes.loc[iframes['type'] == 'O','index']
 
     i = 0
 
     for oxygen in atom_oxygen:
         hydrogen = np.where(
-            (dist_nd[oxygen, ] < 1.5) &
-            (dist_nd[oxygen, ] > 0.))[0]
+            (dist_nd[oxygen, ] < 1.225) &
+            (dist_nd[oxygen, ] > 0.)
+        )[0]
 
         if len( hydrogen) == 2:
             m = (iframes['index'] == oxygen) | (iframes['index']   == hydrogen[0]) | (iframes['index'] == hydrogen[1])
@@ -40,8 +39,11 @@ def findwaters(iframes, dist_nd):
 
             iframes.loc[m, 'mol'] = 'hydroxide'
             iframes.loc[m, 'residue'] = 'OH' + str(i)
-
+        else:
+            print(iframes.i)
+            print(len(hydrogen))
         i += 1
+
 
 
     return iframes
