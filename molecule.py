@@ -19,7 +19,7 @@ def distances(iframes, length, n):
     return dist_nd
 
 
-def findwaters(iframes, dist_nd):
+def findwaters(iframes, dist_nd, hydroxide):
 
     atom_oxygen = iframes.loc[iframes['type'] == 'O', 'index']
     i = 0
@@ -40,11 +40,16 @@ def findwaters(iframes, dist_nd):
         elif len(hydrogen) == 1:
             m = (iframes['index'] == oxygen) | (iframes['index'] == hydrogen[0])
             iframes.loc[m, 'mol'] = 'hydroxide'
-            iframes.loc[m, 'residue'] = 'OH' + str(i)
-        else:
-            print(iframes.i)
-            print(len(hydrogen))
+            iframes.loc[m, 'residue'] = 'OH'
+
         i += 1
+    if len(iframes.loc[iframes['mol'] == 'hydroxide']) == 0:
+        hydroxide = list(hydroxide)
+        m1 = (iframes['index'] == hydroxide[0])
+        m2 = (iframes['index'] == hydroxide[1])
+
+        iframes.loc[m1, ['residue', 'mol']] = 'OH', 'hydroxide'
+        iframes.loc[m2, ['residue', 'mol']] = 'OH', 'hydroxide'
 
     return iframes
 
@@ -82,20 +87,21 @@ def zundel(iframes, dist_nd):
         )[0]
         if min_dist_h < min_h:
             min_h = min_dist_h
-            hydroxide_h = hydrogen
+            hydroxide_h = hydrogen[0]
             hydroxide_o = oxygen
 
     iframes.loc[iframes['index'] == hydroxide_o, 'residue'] = 'hydroxide'
     iframes.loc[iframes['index'] == hydroxide_h, 'residue'] = 'hydroxide'
 
-    zundel_o = list(atom_oxygen).pop(hydroxide_o)
-    zundel_h = list(atom_hydrogen).pop(hydroxide_h)
+    zundel_o = list(atom_oxygen)
+    zundel_h = list(atom_hydrogen)
+    zundel_o.remove(hydroxide_o)
+    zundel_h.remove(hydroxide_h)
 
-    for oxygen in zundel_o:
-        iframes.loc[iframes['index'] == oxygen, ['residue', 'mol']] = 'water', 'WZ'
+    iframes.loc[iframes['index'] == zundel_o[0], ['residue', 'mol']] = 'WZ', 'water'
 
     for hydrogen in zundel_h:
-        iframes.loc[iframes['index'] == hydrogen, ['residue', 'mol']] = 'water', 'WZ'
+        iframes.loc[iframes['index'] == hydrogen, ['residue', 'mol']] = 'WZ', 'water'
 
     return iframes
 
