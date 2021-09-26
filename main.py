@@ -29,7 +29,7 @@ for i in range(max(dataframes['i']) + 1):
     d = distances(iframes, l, n)
     iframesnamed = findwaters(iframes, d)
     print(iframesnamed.loc[iframes['mol'] == 'hydroxide'])
-    if iframesnamed.mol.isnull().any():
+    if "NULL" in iframesnamed['mol']:
         iframesnamed = zundel(iframesnamed, d)
 
     dataframes[dataframes['i'] == i] = iframesnamed
