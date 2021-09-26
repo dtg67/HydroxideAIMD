@@ -1,6 +1,6 @@
 import argparse
 import filetopd
-from molecule import distances, findwaters
+from molecule import distances, findwaters, zundel
 import pandas as pd
 pd.options.mode.chained_assignment = None
 
@@ -29,7 +29,11 @@ for i in range(max(dataframes['i']) + 1):
     d = distances(iframes, l, n)
     iframesnamed = findwaters(iframes, d)
     print(iframesnamed.loc[iframes['mol'] == 'hydroxide'])
+    if iframesnamed.mol.isnull().any():
+        iframesnamed = zundel(iframesnamed, d)
+
     dataframes[dataframes['i'] == i] = iframesnamed
+
 
 print(len(dataframes[dataframes['mol'] == 'hydroxide']))
 dataframes.to_csv('frames.dat', header=True, index=False, sep= ' ')
