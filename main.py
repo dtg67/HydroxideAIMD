@@ -22,9 +22,9 @@ cp2k = args.file
 dataframes = filetopd.filetopd(cp2k)
 hydroxide = 0
 num_frames = max(dataframes['i']) + 1
-num_water_h = (n - 2) / 2
-o_to_h_mat = np.zeros(num_frames, num_water_h)
-
+num_water_h = (n - 2) // 3 * 2
+o_to_h_mat = np.zeros( (int(num_frames), int(num_water_h)) )
+cn = []
 
 for i in range(num_frames):
     print(i)
@@ -35,12 +35,13 @@ for i in range(num_frames):
     if len(iframesnamed.loc[iframesnamed['mol'] == 'NULL']) > 0:
         iframesnamed = zundel(iframesnamed, d)
 
+    hydroxide = iframesnamed.loc[iframesnamed['mol'] == 'hydroxide', 'index']
     dataframes[dataframes['i'] == i] = iframesnamed
     ho_o_w_h_iframes = hydroxide_o_to_water_h_frames(iframes)
     o_to_h_array = hydroxide_o_to_water_h(ho_o_w_h_iframes, length)
-    print(coordination_num(ho_o_w_h_iframes, 2.6, o_to_h_array))
+    cn.append(coordination_num(ho_o_w_h_iframes, 2.5, o_to_h_array))
 
-
+print(np.mean(np.array(cn)))
 dataframes.to_csv('frames.dat', header=True, index=False, sep=' ')
 
 

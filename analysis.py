@@ -27,9 +27,10 @@ def coordination_num(ho_o_w_h_iframes, radius, dist_array):
             (dist_array > 0.)
         )
     cn = []
-    for hydrogen in hydrogens:
-        m = ho_o_w_h_iframes[hydrogen]
-        cn.append(str(ho_o_w_h_iframes.loc[m, 'residue']))
+
+    for hydrogen in hydrogens[0]:
+        cn.append(str(ho_o_w_h_iframes.iloc[hydrogen].residue))
+
     return len(set(cn))
 
 
