@@ -40,8 +40,11 @@ for i in range(num_frames):
     ho_o_w_h_iframes = hydroxide_o_to_water_h_frames(iframes)
     o_to_h_array = hydroxide_o_to_water_h(ho_o_w_h_iframes, length)
     cn.append(coordination_num(ho_o_w_h_iframes, 2.5, o_to_h_array))
+    o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
 
-print(np.mean(np.array(cn)))
+
 dataframes.to_csv('frames.dat', header=True, index=False, sep=' ')
-
+np.savetxt('cn.dat', np.array(cn), fmt='%1i')
+b = np.matrix(o_to_h_mat)
+np.savetxt('HO_O_to_W_H_dist.dat', b, fmt='%.4f')
 
