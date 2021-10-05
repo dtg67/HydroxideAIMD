@@ -2,7 +2,7 @@ import argparse
 import filetopd
 from molecule import distances, findwaters, zundel
 import pandas as pd
-from analysis import hydroxide_o_to_water_h, coordination_num, hydroxide_o_to_water_h_frames
+from analysis import hydroxide_o_to_water_h, coordination_num, hydroxide_o_to_water_h_frames, cn2gaussian
 import numpy as np
 pd.options.mode.chained_assignment = None
 
@@ -40,11 +40,13 @@ for i in range(num_frames):
     ho_o_w_h_iframes = hydroxide_o_to_water_h_frames(iframes)
     o_to_h_array = hydroxide_o_to_water_h(ho_o_w_h_iframes, length)
     cn.append(coordination_num(ho_o_w_h_iframes, 2.5, o_to_h_array))
+    lastcn = cn[-1]
     o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
+    cn2gaussian( lastcn, iframesnamed, i)
 
 
 dataframes.to_csv('frames.dat', header=True, index=False, sep=' ')
-np.savetxt('cn.dat', np.array(cn), fmt='%1i')
+# np.savetxt('cn.dat', np.array(cn), fmt='%1i')
 b = np.matrix(o_to_h_mat)
 np.savetxt('HO_O_to_W_H_dist.dat', b, fmt='%.4f')
 

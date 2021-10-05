@@ -90,8 +90,8 @@ def zundel(iframes, dist_nd):
             hydroxide_h = hydrogen[0]
             hydroxide_o = oxygen
 
-    iframes.loc[iframes['index'] == hydroxide_o, 'residue'] = 'hydroxide'
-    iframes.loc[iframes['index'] == hydroxide_h, 'residue'] = 'hydroxide'
+    iframes.loc[iframes['index'] == hydroxide_o, 'residue'] = 'OH'
+    iframes.loc[iframes['index'] == hydroxide_h, 'residue'] = 'OH'
 
     zundel_o = list(atom_oxygen)
     zundel_h = list(atom_hydrogen)
