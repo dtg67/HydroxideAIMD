@@ -31,3 +31,8 @@ class atom:
                 str(self.index) + '\t' +
                 str(self.mol))
 
+    def to_gauss(self):
+        return (str(self.type) + '\t' +
+                str(self.x) + '\t' +
+                str(self.y) + '\t' +
+                str(self.z) + '\t')

@@ -34,3 +34,25 @@ def coordination_num(ho_o_w_h_iframes, radius, dist_array):
     return len(set(cn))
 
 
+def cn2gaussian(ho_o_w_h_iframes, radius, dist_array, i):
+    hydrogens = np.where(
+            (dist_array <= radius) &
+            (dist_array > 0.)
+        )
+    cn = []
+    for hydrogen in hydrogens[0]:
+        cn.append(str(ho_o_w_h_iframes.iloc[hydrogen].residue))
+
+    cn = set(cn)
+    clustered_frames = []
+    for n in cn:
+        clustered_frames.append(ho_o_w_h_iframes.loc[ho_o_w_h_iframes['residue'] == n])
+
+    ho_iframe = ho_o_w_h_iframes.loc[ho_o_w_h_iframes['residue'] == 'OH']
+    iframe_2gauss = pd.concat([ho_iframe, clustered_frames])
+    print(iframe_2gauss.to_gauss())
+
+    return True
+
+
+
