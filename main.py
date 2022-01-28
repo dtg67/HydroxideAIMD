@@ -8,6 +8,7 @@ pd.options.mode.chained_assignment = None
 
 parser = argparse.ArgumentParser()
 
+
 parser.add_argument("-f", "--file", action="store",
                     help="CP2K trajectory file")
 parser.add_argument("-L", "--length", action="store",
