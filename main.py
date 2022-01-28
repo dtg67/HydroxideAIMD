@@ -2,7 +2,8 @@ import argparse
 import filetopd
 from molecule import distances, findwaters, zundel
 import pandas as pd
-from analysis import hydroxide_o_to_water_h, coordination_num, hydroxide_o_to_water_h_frames, cn2gaussian
+from analysis import hydroxide_o_to_water_o_frames, hydroxide_o_to_water_h, coordination_num, \
+    hydroxide_o_to_water_h_frames, cn2gaussian, hydroxide_o_to_water_o
 import numpy as np
 pd.options.mode.chained_assignment = None
 
@@ -24,6 +25,7 @@ hydroxide = 0
 num_frames = max(dataframes['i']) + 1
 num_water_h = (n - 2) // 3 * 2
 o_to_h_mat = np.zeros( (int(num_frames), int(num_water_h)) )
+o_to_o_mat = np.zeros( (int(num_frames), int(num_water_h/2)) )
 cn = []
 
 for i in range(num_frames):
@@ -44,12 +46,13 @@ for i in range(num_frames):
     cn.append(coordination_num(ho_o_w_h_iframes, 2.5, o_to_h_array))
     lastcn = cn[-1]
     o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
-    o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
-    cn2gaussian( lastcn, iframesnamed, i)
+    o_to_o_mat[i, ] = np.sort(o_to_o_array[1:])
+    #cn2gaussian( lastcn, iframesnamed, i)
 
 
 dataframes.to_csv('frames.dat', header=True, index=False, sep=' ')
 # np.savetxt('cn.dat', np.array(cn), fmt='%1i')
 b = np.matrix(o_to_h_mat)
+c = np.matrix(o_to_o_mat)
 np.savetxt('HO_O_to_W_H_dist.dat', b, fmt='%.4f')
-
+np.savetxt('HO_O_to_W_O_dist.dat', c, fmt='%.4f')

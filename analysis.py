@@ -25,7 +25,7 @@ def hydroxide_o_to_water_o_frames(iframes):
     ho_o_w_o_iframes = pd.concat(ho_o_w_o_iframes)
     return ho_o_w_o_iframes
 
-def hydroxide_o_to_water_h(ho_o_w_o_iframes, length):
+def hydroxide_o_to_water_o(ho_o_w_o_iframes, length):
 
     n = len(ho_o_w_o_iframes['index'])
     dist_nd = distances(ho_o_w_o_iframes, length, n)
