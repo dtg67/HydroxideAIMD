@@ -38,9 +38,12 @@ for i in range(num_frames):
     hydroxide = iframesnamed.loc[iframesnamed['mol'] == 'hydroxide', 'index']
     dataframes[dataframes['i'] == i] = iframesnamed
     ho_o_w_h_iframes = hydroxide_o_to_water_h_frames(iframes)
+    ho_o_w_o_iframes = hydroxide_o_to_water_o_frames(iframes)
     o_to_h_array = hydroxide_o_to_water_h(ho_o_w_h_iframes, length)
+    o_to_o_array = hydroxide_o_to_water_o(ho_o_w_o_iframes, length)
     cn.append(coordination_num(ho_o_w_h_iframes, 2.5, o_to_h_array))
     lastcn = cn[-1]
+    o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
     o_to_h_mat[i, ] = np.sort(o_to_h_array[1:])
     cn2gaussian( lastcn, iframesnamed, i)
 
